@@ -1,0 +1,32 @@
+server:
+  port: 9999
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8
+    type: com.alibaba.druid.pool.DruidDataSource
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+
+
+alipay:
+  appId: 2021000117635810
+  privateKey: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCqQ8XXuwXnr2B8kAxBhuZICdOezlRFULZLjAGhU8Rut1U3CWBTNXl9JfxzJm1aoBvgOnXTlt3f5kqP62nIOk02H6ZSW+YTDXmmdWjpzhWIRfTACP7mYfrVxKrCYoi/6Y1lL1nRY3p988ljniN/Ktx/akdhiQ+dV+16W/RmSIyGwOUFHNt7zAyq0S5DkGnjxLccoeZvYDmUb6Sa89oMIzSYzyp8j3UkBio3SZj3o88PgvVce+e7lvB5s5jB4eFKgNyVcp3h8iSkt+YNXbGxTxbSMyj0MnybLlNfI1OsHXVyaiveHtyyt01F5iDeT6gDNLJOvBg1j9d3p7BGDfuJvu5VAgMBAAECggEBAIlRz6aF9+U71J2hr8DJg8Bl7H8P+XdN+ThE2qu6W5rP0bJppX52il0c3dYhD+EfcFwPyie0bY2+tjQMsWwDWXJlZEbYR17mZ06RMuQeic82XIbkunAkZaEy1GWiApiFTLxmzBHMIWajz7DAQfC2KM+6b4eCe01zNNySfTJhILUsWddHZzp2CLJo0iVStvaVL18PuhZR2RvqofBlQNvNzQ9uMTJ2Jin8b0XNNX7XPqCeocf3tsPbPpI7qJ2Oy3EXEINJnsqAonCU6AA6U3jDHDUzAn8Z6+4khBBp5OGyMv4gPflREj9lJ+35jRD9Zym0tQ/jqa46TJumxsBvM+dHjgECgYEA7jFUe8jk+GEPdt5/DYSQdUX28iDK0/FX4xeTMwDu2wia20bKGtgs/GVU8o0KCA5/vsjpPImnc/33Qcw59JO2kYvqLBt3uLCYBz92LqUT3bZOAGpPUYKNOyuQAShzBW8H7EYxL6yfd1V1fY3keeK+RPa9Iv73uYg112KspnFfypECgYEAtv5l7Ov9a7zJ3rFqCA13kfwt1dyIYYCDNgyBnrVFRywHNIKlz0+YHfY9XJ93k4KYVoK1+SLkWqtsFNAc+U6qW6XxhAFMca6nmPUuq/z402WsPaU4oQqF9gqrNBSpIt3mZNJTDxbzasAdlr90eoovD798Lguup2FOHG170G7+IYUCgYEA6qCVA8oEIdYaEZFhvcMTOTHN6vv6T4OwevXB/b+xiPiU8eJtOrwutABtCO99Lip6E0h81zERTeShJqMxg4XtlLkp1oDIEZmCZ8FPfOsHAqKNe0M9FqFu1RY4J6vcgUG5oDgUQ03bVwVLUn3uzVFY8z3JWSumgY922c9NGjcbkMECgYBoDVXFlxadeVbMItNoysePofYqIeEGl/2D8S6PIQHIi3d5W0SPEfIsL0UK8r4aiWq33lE83aM9DzZAy2l+NUXXIQ+ogNiH18kCx3+HWivegHSlBNqjb4lmswBQd+MIqWaFM7b44JL+w0jP3AOOXh6OdNJWmFvyXvj8XyDFDye/xQKBgAfs8+EP8MjIcDWlYcp0Tr6X8bA1dxwPZF4SdWVCTu3RV9xLhwSJYjAMkMwoK84ralesenFUEG8d3S0r5S8Sk/+ExOP5Wm9SqtRjDFup0rOBu2U99Ol+/UyW5SxdR9Jse9hzPBNKu9FIAwl0ByMd8pF2mhKhhDmIeBkhDS3872Jv
+  publicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqkPF17sF569gfJAMQYbmSAnTns5URVC2S4wBoVPEbrdVNwlgUzV5fSX8cyZtWqAb4Dp105bd3+ZKj+tpyDpNNh+mUlvmEw15pnVo6c4ViEX0wAj+5mH61cSqwmKIv+mNZS9Z0WN6ffPJY54jfyrcf2pHYYkPnVftelv0ZkiMhsDlBRzbe8wMqtEuQ5Bp48S3HKHmb2A5lG+kmvPaDCM0mM8qfI91JAYqN0mY96PPD4L1XHvnu5bwebOYweHhSoDclXKd4fIkpLfmDV2xsU8W0jMo9DJ8my5TXyNTrB11cmor3h7csrdNReYg3k+oAzSyTrwYNY/Xd6ewRg37ib7uVQIDAQAB
+  gateway: openapi.alipaydev.com
+  returnUrl: http://localhost:9999/page/front/work.html
+  #支付成功的接口回调，我们还没写，先空着
+  notifyUrl:      http://mpbm6a.natappfree.cc/pay/fallback
+#  notifyUrl:   http://mpbm6a.natappfree.cc/api/workinfo

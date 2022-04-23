@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>著作权信息登记平台</title>
+
+    <!-- 引入样式 -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+   
+    <link rel="stylesheet" href="../../css/element.css">
+    </link>
+
+    <style>
+
+        .time {
+    font-size: 13px;
+    color: #999;
+  }
+  
+  .bottom {
+    margin-top: 13px;
+    line-height: 12px;
+  }
+
+  .button {
+    padding: 0;
+    float: right;
+  }
+
+  .image {
+    width: 100%;
+    display: block;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+      display: table;
+      content: "";
+  }
+  
+  .clearfix:after {
+      clear: both
+  }
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .a {
+            text-decoration: none;
+        }
+
+        a:link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .icon {
+            text-align: left;
+            font-size: 50px;
+            width: 86px;
+            height: 86px;
+            margin: 10px;
+            padding: 13px;
+            transition: 0.3s ease-in-out;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body style="background-color: #eee">
+    <!--    ElementUI官网地址： https://element.eleme.cn/-->
+
+    <div id="wrapper">
+        <el-row>
+            <div style="background: mediumseagreen; height: 80px; line-height: 80px">
+                <el-col :span="18" :offset="3">
+
+                    <el-row>
+                        <!--                        LOGO区域-->
+                        <el-col :span="6">
+                            <span style="font-size: 26px; color: white; ">著作权信息登记平台</span>
+                        </el-col>
+
+                        <!-- 导航栏 -->
+                        <el-col :span="12" style="color: white;  ">
+                            <a href="./index.html">
+                                <div
+                                    style="width: 80px; text-align: center; display: inline-block; color: white;">
+                                    首页</div>
+                            </a>
+                            <a href="./work.html">
+                                <div style="width: 80px; text-align: center; display: inline-block;color: white;">作品登记</div>
+                            </a>
+                            <a href="./info.html">
+                                <div style="width: 80px; text-align: center; display: inline-block;color: white;">作品展示</div>
+                            </a>
+
+                            <a href="./help.html">
+                                <div style="width: 80px; text-align: center; display: inline-block;color: white;">帮助中心</div>
+                            </a>
+
+                        </el-col>
+                        <el-col :span="6">
+                            <div>
+                                <span style="color: white; margin-right: 10px">{{user.username}}</span>
+                                <a href="login.html" v-if=!{user}><span>登录</span></a>
+                                <a href="register.html"> <span>注册</span> </a>
+                            </div>
+
+                        </el-col>
+                    </el-row>
+                </el-col>
+            </div>
+        </el-row>
+
+        <!-- 主体 -->
+      
+        <el-row >
+            <el-col :span="12" :offset="6">
+
+                <el-card >
+
+                <el-row :gutter="24" >
+                   
+
+                            <el-col :span="6" v-for="item in tableData" :key="item" :offset="item > 0 ? 6: 0" style=" margin-bottom: 20px;">
+                          <el-card :body-style="{ padding: '0px' }" shadow="hover">
+                            <el-image style="width: 200px;height: 300px" :src=`/files/${item.picpath}` :preview-src-list="[`/files/${item.picpath}`]" :fit="'contain '" class="image">
+                            </el-image>
+<!--                              <template slot-scope="scope">-->
+<!--                                  <img style="width: 100px" :src=`/files/${scope.row.picpath}` class="image">-->
+<!--                              </template>-->
+                            <div style="padding: 14px;">
+                              <span>  {{item.name}}</span>
+                              <div class="bottom clearfix">
+                               <h5>作品类型：{{item.type}}</h5>
+<!--                                <el-button type="text" class="button">查看大图</el-button>-->
+                              </div>
+                            </div>
+                          </el-card>
+                        </el-col>
+                     
+
+
+
+
+                </el-row>
+            </el-card>
+
+            </el-col>
+        </el-row>
+     
+
+    </div>
+       <!-- 底部 -->
+       <div id="food"></div>
+
+<script src="../../js/jquery.min.js"></script>
+    <!--    引入Vue.js-->
+    <script src="../../js/vue.min.js"></script>
+    <!-- 引入ElementUI组件库 -->
+    <script src="../../js/element.js"></script>
+    <script src="../../js/axios.min.js"></script>
+
+    <script>
+         
+        new Vue({
+            el: "#wrapper",
+            data: {
+                fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
+                srcList: [],
+                currentDate: new Date(),
+                tableData: [],
+                treeData: [],
+                defaultProps: {
+                    children: 'children',
+                    label: 'name'
+                },
+                imgList: [
+                    "../../images/sign-banner1.jpg",
+                    "../../images/sign-banner1.jpg",
+                    "../../images/sign-banner1.jpg",
+                ],
+                url: '',
+
+
+            },
+            created() {
+                this.load();
+                this.user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : {};
+            },
+            methods: {
+                handleNodeClick(value) {
+                    console.log(value)
+                },
+                load() {
+                    axios.get("/api/workinfo/all").then(res => {
+
+
+                        this.tableData = res.data;
+
+
+                        console.log(this.tableData);
+                        console.log(res.data);
+
+                        var arrayObj = [];
+                        
+                        this.tableData.forEach(function (item) {
+                            console.log("http://localhost:9999/files/"+item.picpath);
+                            arrayObj.push("http://localhost:9999/files/"+item.picpath)
+                            
+                        });
+                        console.log(arrayObj);
+                        this.srcList=arrayObj
+
+                    })
+                },
+
+            }
+        })
+    </script>
+    <script type="text/javascript" color="227, 23, 13" pointColor="208, 210, 214" opacity='1' zIndex="-2" count="150"
+        src="../../js/canvas-nest.js"></script>
+        <script>
+            $("#food").load("./food.html");
+           
+      </script>
+     
+</body>
+
+</html>

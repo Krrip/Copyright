@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>著作权信息登记平台</title>
+
+    <!-- 引入样式 -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+    <link rel="stylesheet" href="../../css/element.css">
+    </link>
+
+    <style >
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .a{
+            text-decoration: none;
+        }
+
+        a:link {color: white; text-decoration:none;}
+        .icon {
+            text-align: left;
+            font-size:50px;
+            width: 86px;
+            height: 86px;
+            margin: 10px;
+            padding: 13px;
+            transition: 0.3s ease-in-out;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body style="background-color: #eee">
+<!--    ElementUI官网地址： https://element.eleme.cn/-->
+
+<div id="wrapper" >
+    <el-row>
+        <div style="background: mediumseagreen; height: 80px; line-height: 80px">
+            <el-col :span="18" :offset="3">
+
+                <el-row>
+                    <!--                        LOGO区域-->
+                    <el-col :span="4">
+                        <span style="font-size: 20px; color: white; ">著作权信息登记平台</span>
+                    </el-col>
+
+                    <!-- 导航栏 -->
+                    <el-col :span="12" style="color: white;  ">
+                        <a href="./index.html">
+                            <div
+                                    style="width: 80px; text-align: center; display: inline-block; color: white;">
+                                首页</div>
+                        </a>
+                        <a href="./work.html">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;">作品登记</div>
+                        </a>
+                        <a href="./info.html">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;">作品展示</div>
+                        </a>
+
+                        <a href="help.html">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;">帮助中心</div>
+                        </a>
+
+                    </el-col>
+                    <el-col :span="6">
+
+<!--                        <span style="color: white; margin-right: 10px">{{user.username}}</span>-->
+                        <div>
+                           <span style="color: white">{{user.username}}，欢迎登录</span>
+                            <a href="login.html" ><span>登录</span></a>
+                            <a href="register.html"> <span>注册</span> </a>
+                        </div>
+
+                    </el-col>
+                </el-row>
+            </el-col>
+        </div>
+    </el-row>
+
+
+</div>
+<!-- 底部 -->
+<!--<div id="food"></div>-->
+
+<script src="../../js/jquery.min.js"></script>
+<script>
+    // $("#food").load("./food.html");
+
+</script>
+
+<!--    引入Vue.js-->
+<script src="../../js/vue.min.js"></script>
+<!-- 引入ElementUI组件库 -->
+<script src="../../js/element.js"></script>
+<script src="../../js/tinymce/tinymce.min.js"></script>
+<!--    <script src="../../js/axios.min.js"></script>-->
+
+<script>
+    let urlBase = "/api/workinfo/";
+    new Vue({
+        el: "#wrapper",
+        data: {
+            user: {},
+
+
+
+        },
+        created() {
+            this.load();
+
+            this.user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : {};
+        },
+        methods: {
+            logout() {
+                $.get("/api/user/logout");
+                sessionStorage.removeItem("user");
+                location.href = "/page/end/login.html";
+            },
+            successUpload(res) {   // 文件上传成功的回调
+                // res.data = "1618101566204" 就是文件的地址，访问文件请使用  http://localhost:9999/files/1618101566204
+                this.fileList.push({name: res.data, url: "/files/" + res.data})
+
+                console.log(res.data);
+
+
+            },
+            upload() {
+                // let files = $("#file")[0].files;
+                // let formData = new FormData();
+                // for (let i = 0; i < files.length; i++) {
+                //     formData.append("files", files[i]);
+                // }
+                let formData = new FormData();
+                formData.append("file", $("#file")[0].files[0])
+                console.log(formData);
+                $.ajax({
+                    url: '/files/upload',
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    data: formData
+                }).then(res => {
+                    if (res.code === '0') {
+                        this.$message({
+                            type: "success",
+                            message: "上传成功"
+                        });
+                        this.entity.picpath = res.data;
+                        this.uploadFile = res.data
+                        // 清除已上传的文件
+                        let file = $("#file");
+                        file.val("")
+                    }
+                })
+            },
+            add() {
+                this.entity = {};
+                this.dialogFormVisible = true;
+
+            },
+            save() {
+                let type = this.entity.id ? "PUT" : "POST";
+                $.ajax({
+                    url: urlBase,
+                    type: type,
+                    contentType: "application/json",
+                    data: JSON.stringify(this.entity)
+                }).then(res => {
+                    if (res.code === '0') {
+                        this.$message({
+                            message: "保存成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.msg,
+                            type: "error"
+                        })
+                    }
+                    this.dialogFormVisible = false;
+                })
+            },
+            edit(obj) {
+                this.entity = obj;
+                this.dialogFormVisible = true;
+                console.log(obj);
+
+            },
+            del(id) {
+                $.ajax({
+                    url: urlBase + id,
+                    type: "delete"
+                }).then(res => {
+                    if (res.code === '0') {
+                        this.$message({
+                            message: "删除成功",
+                            type: "success"
+                        })
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.msg,
+                            type: "error"
+                        })
+                    }
+                })
+            },
+            Pay(e){
+                // console.log(e.id)
+                // $.get(`http://cr5uw8.natappfree.cc/pay/confirm/${e.id}/12.23`).then(res => {
+                //     console.log(res)
+                // }).catch(err => {
+                //     console.log(err)
+                // })
+                window.location.href=` http://b29b9y.natappfree.cc/pay/confirm/${e.id}/12.23`;
+
+            },
+            handleNodeClick(value) {
+                console.log(value)
+            },
+            load() {
+                $.get("/api/workinfo/all").then(res => {
+
+
+                    this.tableData = res;
+
+                    console.log(this.tableData);
+                })
+
+
+            },
+            paytable(){
+                $.get("/api/workcheck/all").then(res => {
+
+
+                    this.tableDatatow = res;
+
+                    console.log(res);
+                })
+            }
+        }
+    })
+</script>
+
+</body>
+
+</html>

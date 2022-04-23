@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>著作权信息登记平台</title>
+
+    <!-- 引入样式 -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+    <link rel="stylesheet" href="../../css/element.css">
+    </link>
+
+    <style >
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .a{
+            text-decoration: none;
+        }
+
+        a:link {color: white; text-decoration:none;}
+        .icon {
+            text-align: left;
+            font-size:50px;
+            width: 86px;
+            height: 86px;
+            margin: 10px;
+            padding: 13px;
+            transition: 0.3s ease-in-out;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body style="background-color: #eee">
+<!--    ElementUI官网地址： https://element.eleme.cn/-->
+
+<div id="wrapper" style="height:980px;">
+    <el-row>
+        <div style="background: mediumseagreen; height: 80px; line-height: 80px">
+            <el-col :span="18" :offset="3">
+
+                <el-row>
+                    <!--                        LOGO区域-->
+                    <el-col :span="6">
+                        <span style="font-size: 26px; color: white; ">著作权信息登记平台</span>
+                    </el-col>
+
+                    <!-- 导航栏 -->
+                    <el-col :span="12" style="color: white;  ">
+                        <a href="./index.html">
+                            <div
+                                    style="width: 80px; text-align: center; display: inline-block; color: white;">
+                                首页</div>
+                        </a>
+                        <a href="./work.html">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;background: cornflowerblue;">作品登记</div>
+                        </a>
+                        <a href="./info.html">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;">作品展示</div>
+                        </a>
+                        <a href="#">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;">新闻中心</div>
+                        </a>
+                        <a href="#">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;">帮助中心</div>
+                        </a>
+
+                    </el-col>
+                    <el-col :span="6">
+                        <div>
+                            <a href="login.html" ><span>登录</span></a>
+                            <a href="register.html"> <span>注册</span> </a>
+                        </div>
+
+                    </el-col>
+                </el-row>
+            </el-col>
+        </div>
+    </el-row>
+
+    <!-- 主体 -->
+    <el-row>
+        <el-col :span="18" :offset="3">
+<el-card>请确认信息</el-card>
+            <el-card>
+            <el-form :model="entity" label-width="150px">
+                <!--                        <el-form-item v-if="item.prop !== 'id'" :label="item.label" label-width="100px" v-for="item in props">-->
+                <!--                            <el-input v-model="entity[item.prop]" autocomplete="off" style="width: 80%"></el-input>-->
+                <!--                        </el-form-item>-->
+
+                <el-form-item label="用户名" hidden>
+                    <el-input v-model="user.username" autocomplete="off" style="width: 80%" >
+
+                    </el-input>
+
+                </el-form-item>
+                <el-form-item label="密码" hidden>
+                    <el-input v-model="user.password" autocomplete="off" style="width: 80%" >
+
+                    </el-input>
+
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email" >
+                    <el-input v-model="user.email" autocomplete="off" style="width: 80%" >
+
+                    </el-input>
+
+                </el-form-item>
+
+
+                <el-form-item label="电话" prop="phone">
+                    <el-input v-model="user.phone" autocomplete="off"style="width: 80%" >
+
+                    </el-input>
+
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="register">立即确认</el-button>
+                    <el-button @click="goback">取消</el-button>
+                </el-form-item>
+
+            </el-form>
+            </el-card>
+
+        </el-col>
+    </el-row>
+
+
+</div>
+<!-- 底部 -->
+<div id="food"></div>
+
+<script src="../../js/jquery.min.js"></script>
+<script>
+    $("#food").load("./food.html");
+
+</script>
+
+<!--    引入Vue.js-->
+<script src="../../js/vue.min.js"></script>
+<!-- 引入ElementUI组件库 -->
+<script src="../../js/element.js"></script>
+<script src="../../js/tinymce/tinymce.min.js"></script>
+<!--    <script src="../../js/axios.min.js"></script>-->
+
+<script>
+    let urlBase = "/api/workinfo/";
+    new Vue({
+        el: "#wrapper",
+        data: {
+            PayBo:{
+                subject: '12',
+                total: 120 ,
+                remind: '支付成功'
+            },
+
+            options: [{
+                value: '原创',
+                label: '原创'
+            }, {
+                value: '改编',
+                label: '改编'
+            }, {
+                value: '翻译',
+                label: '翻译'
+            }, {
+                value: '整理',
+                label: '整理'
+            }, {
+                value: '其他',
+                label: '其他'
+            }],
+            dialogFormVisible: false,
+
+            tableData: [],
+            tableDatatow:[],
+            treeData: [],
+        user:{},
+            entity: {},
+            defaultProps: {
+                children: 'children',
+                label: 'name'
+            },
+            imgList: [
+                "../../images/sign-banner1.jpg",
+                "../../images/sign-banner1.jpg",
+                "../../images/sign-banner1.jpg",
+            ],
+            url: '',
+            props: [{"label":"id","prop":"id"},{"label":"管理员","prop":"username"},{"label":"审核日期","prop":"checktime"},{"label":"审核结果","prop":"checkresult"},{"label":"作品名","prop":"workName"},{"label":"作品类型","prop":"type"}]
+
+
+        },
+        created() {
+            this.user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : {};
+        },
+        methods: {
+            goback(){
+                window.open('work.html');
+            },
+            add() {
+                this.entity = {};
+                this.dialogFormVisible = true;
+
+            },
+
+
+            register() {
+                let type = this.user.id ? "PUT" : "POST";
+                $.ajax({
+                    url: "/api/user/",
+                    type: type,
+                    contentType: "application/json",
+                    data: JSON.stringify(this.user)
+                }).then(res => {
+                    if (res.code === '0') {
+                        this.$message({
+                            message: "完善成功",
+                            type: "success",
+
+                        });
+                        console.log(res);
+                        sessionStorage.setItem("user", JSON.stringify(res.data));
+                        setTimeout(() => {
+                            location.href= "/page/front/dengji.html"
+                        }, 1000)
+                    } else {
+                        this.$message({
+                            message: res.msg,
+                            type: "error"
+                        })
+                    }
+                })
+            },
+
+
+        }
+    })
+</script>
+<script type="text/javascript" color="227, 23, 13" pointColor="208, 210, 214" opacity='1' zIndex="-2" count="100" src="../../js/canvas-nest.js"></script>
+</body>
+
+</html>

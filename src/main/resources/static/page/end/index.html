@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="../../css/element.css">
+    <link rel="stylesheet" href="../../css/base.css">
+    <style>
+        .el-divider__text {
+            background: #eee;
+        }
+        .p1{
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+            text-indent: 30px;
+            line-height: 28px;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper" v-cloak>
+    <el-container>
+        <el-aside :width="isCollapse ? '64px' : '200px'" style="background-color: black; transition:width .5s;min-height: 100vh">
+            <div style="background-color: black; height: 60px; line-height: 60px; text-align: center;
+                color: white; font-size: 20px;">
+                <transition name="el-fade-in-linear">
+                    <span name="fade" v-show="!isCollapse"><a href="/page/end/index.html">著作权管理系统</a></span>
+                </transition>
+            </div>
+            <!-- 菜单 -->
+            <el-menu :default-openeds="['1']" style="border: none;" background-color="black" text-color="#fff" active-text-color="#ffd04b"
+                     default-active="home"
+                     class="el-menu-vertical-demo" :collapse="isCollapse">
+                <a href="/page/end/index.html">
+                    <el-menu-item index="home">
+                        <i class="el-icon-data-line"></i>
+                        <span slot="title">首页</span>
+                    </el-menu-item>
+                </a>
+                <el-submenu index="1" v-if="user.permission && user.permission.length > 0">
+                    <template slot="title">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">信息管理</span>
+                    </template>
+                    <a :href=`${item.path}` v-for="item in user.permission" :key="item.id">
+                        <el-menu-item :index="item.flag">
+                            <i class="el-icon-s-data"></i>
+                            <span slot="title">{{item.name}}</span>
+                        </el-menu-item>
+                    </a>
+                </el-submenu>
+            </el-menu>
+        </el-aside>
+        <el-container>
+            <el-header style="background-color: black; line-height: 60px; color: white;">
+                <el-row>
+                    <el-col :span="1">
+                        <i style="font-size: 22px; cursor: pointer"
+                           :class="[isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold']" @click="handleCollapse"></i>
+                    </el-col>
+                    <el-col :span="2" :offset="21" style="text-align: right">
+                        <span style="color: white; margin-right: 10px">{{user.username}}</span>
+                        <el-dropdown>
+                            <img :src=`/files/${user.avatar}`
+                                 style="width: 40px; height: 40px; margin-right: 10px; border-radius: 50%">
+                            <el-dropdown-menu slot="dropdown">
+                                <a href="/page/end/person.html"
+                                   style="display:inline-block; padding: 5px 0; width: 100px; text-align: center; color: black">个人信息</a>
+                                <a @click="logout" href="#"
+                                   style="display:block; width: 100px;  text-align: center; color: black">退出</a>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </el-col>
+                </el-row>
+            </el-header>
+            <!-- 主体区域 -->
+            <el-main>
+                <el-divider content-position="left">数据概览</el-divider>
+                <el-row :gutter="10" style="padding: 5px 0">
+                    <el-col :span="6">
+                        <el-card style="padding: 10px">
+                            <div style="display: inline-block; padding-right: 20px; vertical-align: middle;">
+<!--                                <img src="../../file/home/home-01.png"  style="width: 60px">-->
+                                <svg t="1619176201079" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1668" width="64" height="64"><path d="M654.826667 117.333333l209.173333 209.173334V928h-704v-810.666667h494.826667zM586.666667 181.312h-362.666667V864h576v-469.333333h-213.333333V181.333333zM704 672v64H320v-64h384z m0-170.666667v64H320v-64h384z m-203.264-170.666666v64H320v-64h180.736z m276.928 0L650.666667 203.669333V330.666667h126.997333z" fill="#1677FF" p-id="1669"></path></svg>
+
+                            </div>
+                            <div style="display: inline-block; padding-left: 40px; vertical-align: middle;">
+                                <div style="color: #455a64; font-size: 24px; padding-bottom: 5px">{{workinfo}}</div>
+                                <div style="color: #99abb4;">作品</div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-card style="padding: 10px">
+                            <div style="display: inline-block; padding-right: 20px; vertical-align: middle;">
+                                <svg t="1619176371455" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1844" width="64" height="64"><path d="M498.602667 191.744a204.714667 204.714667 0 0 1 116.906666 372.8c133.162667 47.317333 229.077333 173.290667 231.893334 322.026667l0.085333 6.784h-64c0-157.333333-127.573333-284.885333-284.885333-284.885334-155.136 0-281.301333 123.968-284.821334 278.250667l-0.085333 6.613333h-64c0-151.68 96.810667-280.746667 232-328.810666a204.714667 204.714667 0 0 1 116.906667-372.8z m0 64a140.714667 140.714667 0 1 0 0 281.450667 140.714667 140.714667 0 0 0 0-281.450667z" fill="#1677FF" p-id="1845"></path></svg>
+                            </div>
+                            <div style="display: inline-block; padding-left: 40px; vertical-align: middle;">
+                                <div style="color: #455a64; font-size: 24px; padding-bottom: 5px">{{yonghu}}</div>
+                                <div style="color: #99abb4;">用户</div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-card style="padding: 10px">
+                            <div style="display: inline-block; padding-right: 20px; vertical-align: middle;">
+                                <svg t="1619176547761" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2052" width="64" height="64"><path d="M865.962667 853.333333v64H138.666667v-64h727.296zM501.333333 96c102.4 0 174.976 57.898667 188.245334 156.010667 7.552 56.042667-11.050667 110.592-57.642667 165.76-17.28 20.48-25.130667 53.568-20.16 81.002666 5.845333 32.149333 26.026667 51.328 50.922667 52.928l3.413333 0.106667h124.970667L852.48 778.666667H150.186667l61.44-226.858667h124.885333c26.474667 0 48.256-19.413333 54.357333-53.034667 4.970667-27.434667-2.88-60.522667-20.117333-80.96-46.613333-55.210667-65.237333-109.76-57.664-165.802666 13.226667-98.112 85.845333-156.010667 188.224-156.010667z m0 64c-71.509333 0-116.010667 35.498667-124.8 100.586667-4.992 36.970667 7.594667 73.834667 43.136 115.946666 30.016 35.584 42.453333 88.064 34.176 133.653334-11.093333 61.418667-56.277333 103.189333-112.341333 105.514666l-4.970667 0.106667h-75.946666L233.792 714.666667H768.853333l-26.773333-98.858667h-75.968c-54.933333 0-100.309333-37.610667-114.986667-94.826667l-1.28-5.418666-1.066666-5.376c-8.256-45.610667 4.202667-98.090667 34.218666-133.674667 35.541333-42.090667 48.128-78.954667 43.136-115.925333-8.810667-65.088-53.290667-100.586667-124.821333-100.586667z" fill="#1677FF" p-id="2053"></path></svg>
+                            </div>
+                            <div style="display: inline-block; padding-left: 40px; vertical-align: middle;">
+                                <div style="color: #455a64; font-size: 24px; padding-bottom: 5px">{{tongguo}}</div>
+                                <div style="color: #99abb4;">通过数</div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-card style="padding: 10px">
+                            <div style="display: inline-block; padding-right: 20px; vertical-align: middle;">
+                                <svg t="1619176575001" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2228" width="64" height="64"><path d="M928 181.333333v661.333334h-832v-661.333334h832z m-64 64h-704v533.333334h704v-533.333334z m-85.333333 373.333334v64h-533.333334v-64h533.333334zM512 341.333333l31.36 63.509334 70.08 10.197333-50.709333 49.450667 11.946666 69.802666L512 501.333333l-62.698667 32.96 11.968-69.802666-50.709333-49.450667 70.101333-10.197333L512 341.333333z" fill="#1677FF" p-id="2229"></path></svg>
+                            </div>
+                            <div style="display: inline-block; padding-left: 40px; vertical-align: middle;">
+                                <div style="color: #455a64; font-size: 24px; padding-bottom: 5px">{{zhengshu}}</div>
+                                <div style="color: #99abb4;">证书</div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+
+
+                   
+                <el-row style="padding: 5px 0">
+                    <el-col :span="24">
+                        <el-card>
+                            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<H2>欢迎来到著作权管理系统</H2>
+                           <p class="p1">系统分为系统管理员、审核员用户和普通用户三种类型，系统管理员拥有系统最高权限，一般只负责管理角色的分配，密码的重置工作等。审核员则对所申报的著作权进行审核及证书颁发。著作权登记申请人可编辑个人信息进行版权登记申请，申请人可对所申报的著作权进行查看。</p>
+
+                              </el-card>
+                    </el-col>
+                </el-row>
+
+
+             
+
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+
+<script src="../../js/echarts.min.js"></script>
+<script src="../../js/china.js"></script>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/vue.min.js"></script>
+<script src="../../js/element.js"></script>
+<!--<script src="../../js/base.js"></script>-->
+
+
+<script>
+     let urlBase = "/api/user/all";
+    let pieOption = {
+        "title":{
+            "text":"作品类型统计"
+        },
+        "legend":{
+            "x":"left",
+            "y":"center",
+            "orient":"vertical",
+            "data":[
+                "原创",
+                "翻译",
+                "整理",
+                "其他",
+            ]
+        },
+        "tooltip":{
+            "show":true
+        },
+        "xAxis":null,
+        "yAxis":null,
+        "series":[
+            {
+                "name":"作品比例",
+                "type":"pie",
+                "radius":"55%",
+                "data":[
+                    {
+                        "name":"原创",
+                        "value":589
+                    },
+                    {
+                        "name":"翻译",
+                        "value":1874
+                    },
+                    {
+                        "name":"整理",
+                        "value":995
+                    },
+                    {
+                        "name":"其他",
+                        "value":249
+                    }
+                ]
+            }
+        ]
+    }
+    let mapOption = {
+        title : {
+            text: '用户地域分布',
+            subtext: '',
+            left: 'center'
+        },
+        tooltip : {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data:['用户']
+        },
+        visualMap: {
+            min: 0,
+            max: 2500,
+            left: 'left',
+            top: 'bottom',
+            text:['高','低'],           // 文本，默认为数值文本
+            calculable : true
+        },
+        toolbox: {
+            show: true,
+            orient : 'vertical',
+            left: 'right',
+            top: 'center',
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        series : [
+            {
+                name: '用户',
+                type: 'map',
+                mapType: 'china',
+                roam: false,
+                label: {
+                    normal: {
+                        show: false
+                    },
+                    emphasis: {
+                        show: true
+                    }
+                },
+                data:[
+                    {name: '北京',value: Math.round(Math.random()*1000)},
+                    {name: '天津',value: Math.round(Math.random()*1000)},
+                    {name: '上海',value: Math.round(Math.random()*1000)},
+                    {name: '重庆',value: Math.round(Math.random()*1000)},
+                    {name: '河北',value: Math.round(Math.random()*1000)},
+                    {name: '河南',value: Math.round(Math.random()*1000)},
+                    {name: '云南',value: Math.round(Math.random()*1000)},
+                    {name: '辽宁',value: Math.round(Math.random()*1000)},
+                    {name: '黑龙江',value: Math.round(Math.random()*1000)},
+                    {name: '湖南',value: Math.round(Math.random()*1000)},
+                    {name: '安徽',value: Math.round(Math.random()*1000)},
+                    {name: '山东',value: Math.round(Math.random()*1000)},
+                    {name: '新疆',value: Math.round(Math.random()*1000)},
+                    {name: '江苏',value: Math.round(Math.random()*1000)},
+                    {name: '浙江',value: Math.round(Math.random()*1000)},
+                    {name: '江西',value: Math.round(Math.random()*1000)},
+                    {name: '湖北',value: Math.round(Math.random()*1000)},
+                    {name: '广西',value: Math.round(Math.random()*1000)},
+                    {name: '甘肃',value: Math.round(Math.random()*1000)},
+                    {name: '山西',value: Math.round(Math.random()*1000)},
+                    {name: '内蒙古',value: Math.round(Math.random()*1000)},
+                    {name: '陕西',value: Math.round(Math.random()*1000)},
+                    {name: '吉林',value: Math.round(Math.random()*1000)},
+                    {name: '福建',value: Math.round(Math.random()*1000)},
+                    {name: '贵州',value: Math.round(Math.random()*1000)},
+                    {name: '广东',value: Math.round(Math.random()*1000)},
+                    {name: '青海',value: Math.round(Math.random()*1000)},
+                    {name: '西藏',value: Math.round(Math.random()*1000)},
+                    {name: '四川',value: Math.round(Math.random()*1000)},
+                    {name: '宁夏',value: Math.round(Math.random()*1000)},
+                    {name: '海南',value: Math.round(Math.random()*1000)},
+                    {name: '台湾',value: Math.round(Math.random()*1000)},
+                    {name: '香港',value: Math.round(Math.random()*1000)},
+                    {name: '澳门',value: Math.round(Math.random()*1000)}
+                ]
+            }
+        ]
+    };
+    //指定折线图的配置项和数据
+    let polylineOption={
+        //标题
+        title:{
+            text:'作品登记统计'
+        },
+        //工具箱
+        //保存图片
+        toolbox:{
+            show:true,
+            feature:{
+                saveAsImage:{
+                    show:true
+                }
+            }
+        },
+        //图例-每一条数据的名字叫销量
+        legend:{
+            data:['原创', "整理"]
+        },
+        //x轴
+        xAxis:{
+            data:["一月","二月","三月","四月","五月","六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
+        },
+        //y轴没有显式设置，根据值自动生成y轴
+        yAxis:{},
+        //数据-data是最终要显示的数据
+        series:[{
+            name:'原创',
+            type:'line',
+            data:[40,20,35,60,55,10,88,27,51,66,75,68]
+        },{
+            name:'整理',
+            type:'line',
+            data:[85,74,29,59,68,99,95,68,77,88,75,70]
+        }
+
+
+        ]
+    };
+
+    new Vue({
+        el: "#wrapper",
+        data: {
+            workinfo:[],
+            yonghu:[],
+            tongguo:[],
+            zhengshu:[],
+            user: {},
+            tableData: [],
+            pageNum: 1,
+            pageSize: 10,
+            total: 0,
+            dialogFormVisible: false,
+            entity: {},
+            isCollapse: false
+        },
+        created() {
+            this.user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : {};
+            this.$nextTick(() => {
+                this.loadEcharts();
+            })
+            // this.loadTable();
+        },
+        methods: {
+            // loadTable() {
+            //     $.get(urlBase + "/page?pageNum=" + this.pageNum + "&pageSize=" + this.pageSize + "&name=" +
+            //         this.search).then(res => {
+            //         this.tableData = res.data.records;
+            //         console.log(this.tableData);
+            //        this.total = res.data.total;
+            //     })
+            // },
+            loadEcharts() {
+                $.get(urlBase 
+                    ).then(res => {
+                    // this.tableData = res.data;
+                    // console.log("tableData",this.tableData);
+                    // console.log("res",res);
+               //统计用户
+                this.yonghu=res.length;
+                console.log("yonghu",this.yonghu);
+                });
+
+                //统计作品
+                $.get("/api/workinfo/all").then(res => {
+                   this.workinfo=res.length;
+                    console.log(this.workinfo);
+
+                });
+
+                //统计证书
+                $.get("/api/workinfo/zhengshu").then(res => {
+                    this.zhengshu = res;
+                    console.log("zhengshu",this.zhengshu);
+
+                });
+
+                //统计通过数
+                $.get("/api/workcheck/tongguo").then(res => {
+                    this.tongguo = res;
+                    console.log("tongguo",this.tongguo);
+
+                });
+             
+                // 基于准备好的dom，初始化echarts实例
+                let myChart = echarts.init(document.getElementById('main'));
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(pieOption);
+
+                // 基于准备好的dom，初始化echarts实例
+                let mapChart = echarts.init(document.getElementById('map'));
+                // 使用刚指定的配置项和数据显示图表。
+                mapChart.setOption(mapOption);
+
+                let polylineChart = echarts.init(document.getElementById('polyline'));
+                // 使用刚指定的配置项和数据显示图表。
+                polylineChart.setOption(polylineOption);
+            },
+            handleCollapse() {
+                this.isCollapse = !this.isCollapse;
+            },
+            logout() {
+                $.get("/api/user/logout");
+                sessionStorage.removeItem("user");
+                location.href = "/page/end/login.html";
+            }
+        }
+    })
+</script>
+</body>
+</html>

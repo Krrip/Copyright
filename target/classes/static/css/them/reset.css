@@ -1,0 +1,54 @@
+body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ul,ol,li,pre,fieldset,lengend,button,input,textarea,th,td{margin:0;padding:0}
+body,button,input,select,textarea{font:14px / 1.5 "Microsoft YaHei","\5b8b\4f53",sans-serif;color:#666}
+h2,h3,h4,h5,h6{font-family:Microsoft YaHei,sans-serif}
+ul,ol{list-style:none}
+img{display:block;border:0}
+input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit}
+input,button,textarea,select{font-size:100%}
+textarea{resize:none}
+table{border-collapse:collapse;border-spacing:0}
+a{color:#272727;text-decoration:none}
+a:hover{color:#1591e7}
+select:focus { outline: none; }
+input[type="radio"]{ outline: none;cursor:pointer }
+
+a{outline:none;blr:expression(this.onFocus=this.blur());}
+a:focus { -moz-outline-style: none; }
+input::-ms-clear{display:none;}
+
+.w{width: 1300px;margin: 0 auto;}
+.fl{float:left} 
+.fr{float:right} 
+.clear{clear:both} 
+.clearfix:after{content:"\200B";display:block;height:0;clear:both} 
+.clearfix {*zoom:1;}/*IE/7/6*/ 
+*{box-sizing: border-box}
+
+
+input{vertical-align: middle}
+/*CSS input type="number"去掉上下箭头*/
+input[type=number] {
+    -moz-appearance:textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #8c8c8c; 
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #8c8c8c;
+}
+
+input:-ms-input-placeholder{
+    color: #8c8c8c;
+}
+
+input::-webkit-input-placeholder{
+    color: #8c8c8c;
+}
+
+.fixed-bottom{position: fixed;bottom: 0;width:100%;}

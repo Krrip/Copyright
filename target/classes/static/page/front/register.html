@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/element.css">
+</head>
+<style>
+    .logo{
+        color: white;
+        position:absolute;
+        margin: 130px;
+    }
+</style>
+<body  style="background-color: rgb(45, 58, 75);">
+<div id="wrapper">
+    <div class="logo"><h1>版权保护·刻不容缓</h1></div>
+    <div style="width: 500px; margin: 150px auto;background-color:rgb(166, 183, 214); border-radius: 10px;margin-right:90px;">
+        <div style="width: 100%; height: 100px; color: darkblue; font-size: 30px;line-height: 100px; text-align: center">欢迎注册</div>
+        <div style="margin-top: 25px; width: 100%; height: 275px; text-align: center">
+            <el-form :model="user" :rules="rules" ref="user"  >
+                <!--                        <el-form-item v-if="item.prop !== 'id'" :label="item.label" label-width="100px" v-for="item in props">-->
+                <!--                            <el-input v-model="entity[item.prop]" autocomplete="off" style="width: 80%"></el-input>-->
+                <!--                        </el-form-item>-->
+
+                <el-form-item prop="username" >
+                    <el-input  placeholder="用户名" v-model="user.username" autocomplete="off" style="width: 65%" >
+
+                    </el-input>
+
+                </el-form-item>
+                <el-form-item prop="password"  >
+                    <el-input  type="password" placeholder="密码" v-model="user.password" autocomplete="off" style="width: 65%" >
+
+                    </el-input>
+
+                </el-form-item>
+                <el-form-item prop="checkPass">
+                    <el-input  type="password" placeholder="确认密码" v-model="user.checkPass" autocomplete="off" style="width: 65%" >
+
+                    </el-input>
+
+                </el-form-item>
+                <el-form-item>
+                    <el-button style="width: 65%"  size="medium" type="primary" @click="register">立即注册</el-button>
+                   <p><a style="width: 60%; text-align: right; display: inline-block; color: darkblue" href="login.html">已有账号，去登录</a></p>
+                </el-form-item>
+
+            </el-form>
+        </div>
+    </div>
+</div>
+
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/vue.min.js"></script>
+<script src="../../js/element.js"></script>
+
+<script>
+    var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('请再次输入密码'));
+        } else if (value !== vue._data.user.password) {
+            callback(new Error('两次输入密码不一致!'));
+        } else {
+            callback();
+        }
+    };
+    var  validatePass = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('请输入密码'));
+        } else {
+            if (vue._data.user.checkPass !== '') {
+                vue.$refs.user.validateField('checkPass');
+            }
+            callback();
+        }
+    };
+    var vue = new Vue({
+        el: "#wrapper",
+        data: {
+            user: {
+                username: '',
+                password: '',
+                checkPass: '',
+
+            },
+            rules: {
+                username: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur' }
+                ],
+                password: [
+                    { validator: validatePass, trigger: 'blur' }
+                ],
+                checkPass: [
+                    { validator: validatePass2, trigger: 'blur' }
+                ],
+
+            }
+
+        },
+
+        methods: {
+            register() {
+                if (!this.user.username) {
+                    this.$message({
+                        message: "请输入用户名",
+                        type: "error"
+                    });
+                    return;
+                }
+                if (!this.user.password) {
+                    this.$message({
+                        message: "请输入密码",
+                        type: "error"
+                    });
+                    return;
+                }
+                $.ajax({
+                    url: "/api/user/register",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(this.user)
+                }).then(res => {
+                    if (res.code === '0') {
+                        this.$message({
+                            message: "注册成功",
+                            type: "success"
+                        });
+                        sessionStorage.setItem("user", JSON.stringify(res.data));
+                        setTimeout(() => {
+                            location.href= "/page/front/login.html"
+                        }, 1000)
+                    } else {
+                        this.$message({
+                            message: res.msg,
+                            type: "error"
+                        })
+                    }
+                })
+            }
+        }
+    })
+
+
+</script>
+<script type="text/javascript" color="139, 146, 154" pointColor="208, 210, 214" opacity='1' zIndex="-2" count="100" src="../../js/canvas-nest.js"></script>
+</body>
+</html>

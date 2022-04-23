@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>著作权信息登记平台</title>
+
+    <!-- 引入样式 -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+    <link rel="stylesheet" href="../../css/element.css">
+    </link>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .a {
+            text-decoration: none;
+        }
+
+        a:link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .icon {
+            text-align: left;
+            font-size: 50px;
+            width: 86px;
+            height: 86px;
+            margin: 10px;
+            padding: 13px;
+            transition: 0.3s ease-in-out;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body style="background-color: #eee">
+<!--    ElementUI官网地址： https://element.eleme.cn/-->
+
+<div id="wrapper" style="height:980px;">
+    <el-row>
+        <div style="background: mediumseagreen; height: 80px; line-height: 80px">
+            <el-col :span="18" :offset="3">
+
+                <el-row>
+                    <!--                        LOGO区域-->
+                    <el-col :span="6">
+                        <span style="font-size: 26px; color: white; ">著作权信息登记平台</span>
+                    </el-col>
+
+                    <!-- 导航栏 -->
+                    <el-col :span="12" style="color: white;  ">
+                        <a href="./index.html">
+                            <div
+                                    style="width: 80px; text-align: center; display: inline-block; color: white;">
+                                首页
+                            </div>
+                        </a>
+                        <a href="./work.html">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;">
+                                作品登记
+                            </div>
+                        </a>
+                        <a href="./info.html">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;">作品展示</div>
+                        </a>
+
+                        <a href="./help.html">
+                            <div style="width: 80px; text-align: center; display: inline-block;color: white;">帮助中心</div>
+                        </a>
+
+                    </el-col>
+                    <el-col :span="6">
+                        <div>
+                            <span style="color: white; margin-right: 10px">{{user.username}}</span>
+                            <a href="login.html" v-if=!{user}><span>登录</span></a>
+                            <a href="register.html"> <span>注册</span> </a>
+                        </div>
+
+                    </el-col>
+                </el-row>
+            </el-col>
+        </div>
+    </el-row>
+
+    <!-- 主体 -->
+    <el-row>
+        <el-col :span="18" :offset="3">
+<el-card>    <el-button type="primary" size="mini" style="margin: 3px 0"  @click="wansan">立即登记</el-button>
+<!--    <a-->
+<!--        href="http://localhost:9999/page/front/wansan.html" target="_blank">登记作品</a>-->
+
+
+
+</el-button></el-card>
+            <el-tabs type="border-card">
+                <el-tab-pane label="登记">
+                    <el-table stripe :data="tableData" style="width: 100%">
+<!--                        <el-table-column prop="userid" label="用户名">-->
+<!--                        </el-table-column>-->
+                        <el-table-column prop="name" label="作品名">
+                        </el-table-column>
+                        <el-table-column prop="author" label="作者">
+                        </el-table-column>
+                        </el-table-column>
+                        <el-table-column prop="owen" label="著作权人">
+
+                        </el-table-column>
+                        <el-table-column prop="type" label="作品类别">
+
+                        </el-table-column>
+                        <el-table-column prop="date" label="作品创作完成时间" sortable>
+
+                        </el-table-column>
+                        <el-table-column prop="souciDate" label="首次发表日期">
+
+                        </el-table-column>
+                        <el-table-column prop="applytime" label="申请日期">
+
+                        </el-table-column>
+
+                        <el-table-column prop="applyer" label="申请人">
+
+                        </el-table-column>
+                        <el-table-column prop="picpath" label="图片">
+                            <template slot-scope="scope">
+                                <img style="width: 100px" :src=`/files/${scope.row.picpath}` alt="上传图片编号">
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="zhengshu" label="下载证书">
+//获取数据库地址
+                            <template slot-scope="scope" v-if="scope.row.zhengshu != null ">
+                                <a style="color: blue;" :href=`${scope.row.zhengshu}`>下载</a>
+<!--                                <a href="file:///C:/Users/Lin/Desktop/codecode/1620057572932.pdf">下载</a>-->
+
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="100">
+                            <template slot-scope="scope">
+                                <el-button @click="edit(scope.row)" type="text">编辑</el-button>
+                                <el-popconfirm
+                                        @onConfirm="del(scope.row.id)"
+                                        title="确定删除？"
+                                >
+                                    <el-button type="text" slot="reference">删除</el-button>
+
+                                </el-popconfirm>
+                                <el-button type="text" @click="Pay(scope.row)">支付</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+<!--分页-->
+                    <div style="background-color: white">
+                        <el-pagination
+                                @size-change="handleSizeChange"
+                                @current-change="handleCurrentChange"
+                                :current-page="pageNum"
+                                :page-sizes="[5, 10, 20, 40]"
+                                :page-size="pageSize"
+                                layout="total, sizes, prev, pager, next, jumper"
+                                :total="total">
+                        </el-pagination>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="审核区">
+                    <el-table
+                            :data="tableDatatow"
+                            border
+                            style="width: 100%">
+                        <el-table-column
+                                :prop="item.prop"
+                                :label="item.label"
+                                v-for="item in props"
+                        >
+                        </el-table-column>
+<!--                        <el-table-column prop="remind" label="支付" width="180">-->
+<!--                        </el-table-column>-->
+
+                    </el-table>
+                    <!-- 分页 -->
+                    <div style="background-color: white">
+                        <el-pagination
+                                @size-change="handleSizeChange2"
+                                @current-change="handleCurrentChange2"
+                                :current-page="pageNum"
+                                :page-sizes="[5, 10, 20, 40]"
+                                :page-size="pageSize"
+                                layout="total, sizes, prev, pager, next, jumper"
+                                :total="total">
+                        </el-pagination>
+                    </div>
+                </el-tab-pane>
+
+            </el-tabs>
+
+        </el-col>
+    </el-row>
+    <el-dialog title="新增作品信息" :visible.sync="dialogFormVisible" width="60%" close-on-click-modal="false"
+
+               close-on-press-escape="false" show-close="false">
+        <el-form :model="entity" label-width="150px">
+            <!--                        <el-form-item v-if="item.prop !== 'id'" :label="item.label" label-width="100px" v-for="item in props">-->
+            <!--                            <el-input v-model="entity[item.prop]" autocomplete="off" style="width: 80%"></el-input>-->
+            <!--                        </el-form-item>-->
+
+
+            <el-form-item label="作品名">
+                <el-input v-model="entity.name" autocomplete="off" style="width: 80%">
+
+                </el-input>
+
+            </el-form-item>
+            <el-form-item label="作者">
+                <el-input v-model="entity.author" autocomplete="off"style="width: 80%" >
+
+                </el-input>
+
+            </el-form-item>
+
+            <el-form-item label="著作权人">
+                <el-input v-model="entity.owen" autocomplete="off" style="width: 80%">
+
+                </el-input>
+
+            </el-form-item>
+            <el-form-item label="申请人">
+                <el-input v-model="entity.applyer" autocomplete="off" style="width: 80%">
+
+                </el-input>
+
+            </el-form-item>
+
+            <el-form-item label="作品类别">
+                <el-select v-model="entity.type" placeholder="请选择">
+                    <el-option v-for="item in options" :key="item.value" :label="item.label"
+                               :value="item.value">
+                    </el-option>
+                </el-select>
+
+
+            </el-form-item>
+            <el-form-item label="作品创作完成时间">
+                <el-date-picker value-format="yyyy-MM-dd" v-model="entity.date" type="date" placeholder="选择日期时间">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="首次发表日期">
+                <el-date-picker value-format="yyyy-MM-dd" v-model="entity.souciDate" type="date" placeholder="选择日期时间">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="申请日期">
+                <el-date-picker value-format="yyyy-MM-dd" v-model="entity.applytime" type="date" placeholder="选择日期时间">
+                </el-date-picker>
+            </el-form-item>
+
+            <el-form-item label="电子证书">
+                <el-button type="primary">生成</el-button>
+            </el-form-item>
+            <!--                        <el-form-item label="图片">-->
+            <!--                            <el-upload-->
+            <!--                                    @change="upload"-->
+            <!--                                    id="file"-->
+            <!--                            class="upload-demo"-->
+            <!--                            action="/files/upload"-->
+            <!--                            :file-list="fileList"-->
+            <!--                            list-type="picture"-->
+            <!--                            :on-success="successUpload">-->
+            <!--                        <el-button size="small" type="primary">点击上传</el-button>-->
+            <!--&lt;!&ndash;                        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>&ndash;&gt;-->
+            <!--                    </el-upload>-->
+            <!--                            <span>{{entity.picpath}}</span>-->
+            <!--                        </el-form-item>-->
+            <el-form-item label="图片" label-width="100px">
+                <div class="upload-box">
+                    上传<input style="cursor: pointer" type="file" @change="upload" id="file">
+                </div>
+                <span>{{entity.picpath}}</span>
+            </el-form-item>
+
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
+        </div>
+    </el-dialog>
+
+</div>
+<!-- 底部 -->
+<div id="food"></div>
+
+<script src="../../js/jquery.min.js"></script>
+<script>
+    $("#food").load("./food.html");
+
+</script>
+
+<!--    引入Vue.js-->
+<script src="../../js/vue.min.js"></script>
+<!-- 引入ElementUI组件库 -->
+<script src="../../js/element.js"></script>
+<script src="../../js/tinymce/tinymce.min.js"></script>
+<script src="../../js/axios.min.js"></script>
+
+<script>
+    let urlBase = "/api/workinfo/";
+    new Vue({
+        el: "#wrapper",
+        data: {
+            user:[],
+            pageNum: 1,
+            pageSize: 10,
+            total: 0,
+            search: '',
+            PayBo: {
+                subject: '12',
+                total: 120,
+                remind: '支付成功'
+            },
+
+            options: [{
+                value: '原创',
+                label: '原创'
+            }, {
+                value: '改编',
+                label: '改编'
+            }, {
+                value: '翻译',
+                label: '翻译'
+            }, {
+                value: '整理',
+                label: '整理'
+            }, {
+                value: '其他',
+                label: '其他'
+            }],
+            dialogFormVisible: false,
+            tableData: [],
+            tableDatatow: [],
+            treeData: [],
+            entity: {},
+            defaultProps: {
+                children: 'children',
+                label: 'name'
+            },
+            imgList: [
+                "../../images/sign-banner1.jpg",
+                "../../images/sign-banner1.jpg",
+                "../../images/sign-banner1.jpg",
+            ],
+            url: '',
+            props: [ {"label": "作品名", "prop": "workName"}, {
+                "label": "审核日期",
+                "prop": "checktime"
+            }, {
+                "label": "作品类型",
+                "prop": "type"
+            }, {"label": "审核结果", "prop": "checkresult"}]
+
+
+        },
+        created() {
+            this.load();
+            this.paytable();
+            this.user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : {};
+        },
+        methods: {
+wansan(){
+    let email = $.parseJSON(sessionStorage.getItem("user")).email;
+    console.log("email",email);
+
+if(email==null){
+    setTimeout(() => {
+        location.href= "/page/front/wansan.html"
+    }, 1000)
+
+}else {
+    setTimeout(() => {
+        location.href= "/page/front/dengji.html"
+    }, 1000)
+}
+
+},
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+                this.load();
+            },
+            handleCurrentChange(pageNum) {
+                this.pageNum = pageNum;
+                this.load();
+            },
+            handleSizeChange2(pageSize) {
+                this.pageSize = pageSize;
+                this.paytable();
+            },
+            handleCurrentChange2(pageNum) {
+                this.pageNum = pageNum;
+                this.paytable();
+            },
+
+            successUpload(res) {   // 文件上传成功的回调
+                // res.data = "1618101566204" 就是文件的地址，访问文件请使用  http://localhost:9999/files/1618101566204
+                this.fileList.push({name: res.data, url: "/files/" + res.data})
+                console.log(res.data);
+            },
+            upload() {
+                // let files = $("#file")[0].files;
+                // let formData = new FormData();
+                // for (let i = 0; i < files.length; i++) {
+                //     formData.append("files", files[i]);
+                // }
+                let formData = new FormData();
+                formData.append("file", $("#file")[0].files[0])
+                console.log(formData);
+                $.ajax({
+                    url: '/files/upload',
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    data: formData
+                }).then(res => {
+                    if (res.code === '0') {
+                        this.$message({
+                            type: "success",
+                            message: "上传成功"
+                        });
+                        this.entity.picpath = res.data;
+                        this.uploadFile = res.data
+                        // 清除已上传的文件
+                        let file = $("#file");
+                        file.val("")
+                    }
+                })
+            },
+            add() {
+                this.entity = {};
+                this.dialogFormVisible = true;
+
+            },
+            save() {
+                let type = this.entity.id ? "PUT" : "POST";
+                $.ajax({
+                    url: urlBase,
+                    type: type,
+                    contentType: "application/json",
+                    data: JSON.stringify(this.entity)
+                }).then(res => {
+                    if (res.code === '0') {
+                        this.$message({
+                            message: "保存成功",
+                            type: "success"
+                        });
+                        this.load();
+                    } else if (res.code === 302) {
+                        this.$message({
+                            message: res.msg,
+                            type: "error"
+
+                        })
+
+                        window.location = "/";
+                    }
+
+                })
+                this.dialogFormVisible = false;
+            },
+            edit(obj) {
+                this.entity = obj;
+                this.dialogFormVisible = true;
+                console.log(obj);
+
+            },
+            del(id) {
+                $.ajax({
+                    url: urlBase + id,
+                    type: "delete"
+                }).then(res => {
+                    if (res.code === '0') {
+                        this.$message({
+                            message: "删除成功",
+                            type: "success"
+                        })
+                        this.load();
+                    } else {
+                        this.$message({
+                            message: res.msg,
+                            type: "error"
+                        })
+                    }
+                })
+            },
+            Pay(e) {
+                // console.log(e.id)
+                // $.get(`http://cr5uw8.natappfree.cc/pay/confirm/${e.id}/12.23`).then(res => {
+                //     console.log(res)
+                // }).catch(err => {
+                //     console.log(err)
+                // })
+                window.location.href = `     http://mpbm6a.natappfree.cc/pay/confirm/${e.id}/12.23`;
+
+            },
+            handleNodeClick(value) {
+                console.log(value)
+            },
+
+
+            load() {
+                // $.get("/api/workinfo/all").then(res => {
+                //
+                //
+                //     this.tableData = res;
+                //
+                //     console.log(this.tableData);
+                //
+                //
+                // })
+                $.get("/api/workinfo/" + "/page?pageNum=" + this.pageNum + "&pageSize=" + this.pageSize + "&name=" +
+                    this.search).then(res => {
+                    this.tableData = res.data.records;
+                    console.log("作品列表",this.tableData)
+                    this.total = res.data.total;
+                })
+
+
+            },
+            paytable() {
+                // $.get("/api/workcheck/all").then(res => {
+                //
+                //
+                //     this.tableDatatow = res;
+                //
+                //
+                // })
+                $.get("/api/workcheck/" + "/pageAll?pageNum=" + this.pageNum + "&pageSize=" + this.pageSize +"&name=" + this.search).then(res => {
+                    this.tableDatatow = res.data.records;
+
+                    console.log("支付",res.data.records);
+                    this.total = res.data.total;
+                })
+            }
+        }
+    })
+</script>
+<script type="text/javascript" color="227, 23, 13" pointColor="208, 210, 214" opacity='1' zIndex="-2" count="100"
+        src="../../js/canvas-nest.js"></script>
+
+</body>
+
+</html>
